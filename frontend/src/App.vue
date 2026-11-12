@@ -6,6 +6,7 @@
       <router-link to="/sources">源管理</router-link>
       <router-link to="/preview">样本预览</router-link>
       <router-link to="/workbench">运行台</router-link>
+      <router-link to="/rpa">RPA 录入队列</router-link>
       <router-link to="/staging">Staging</router-link>
       <router-link to="/conflicts">冲突队列</router-link>
       <router-link to="/canonical">Canonical</router-link>

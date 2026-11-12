@@ -92,8 +92,8 @@ def insert_staging(
     source_id: int,
     item: dict[str, Any],
     disposition: str,
-) -> None:
-    conn.execute(
+) -> int:
+    cur = conn.execute(
         """
         INSERT INTO staging_rows(
             run_id, source_id, business_key, event_ts, source_revision,
@@ -110,6 +110,7 @@ def insert_staging(
             disposition,
         ),
     )
+    return int(cur.lastrowid)
 
 
 def list_staging(conn: sqlite3.Connection, run_id: int | None = None) -> list[dict[str, Any]]:
@@ -147,8 +148,8 @@ def insert_conflict(
     existing_payload: dict[str, Any],
     incoming_payload: dict[str, Any],
     reason: str,
-) -> None:
-    conn.execute(
+) -> int:
+    cur = conn.execute(
         """
         INSERT INTO conflicts(
             run_id, source_id, business_key, existing_payload, incoming_payload,
@@ -164,6 +165,7 @@ def insert_conflict(
             reason,
         ),
     )
+    return int(cur.lastrowid)
 
 
 def list_conflicts(conn: sqlite3.Connection) -> list[dict[str, Any]]:

@@ -1,0 +1,4 @@
+{"business_key":"SKU-4001","title":"Cork Desk Mat","price":22.0,"category":"office","event_ts":"2026-11-03T08:00:00Z","source_revision":1}
+{"business_key":"SKU-1001","title":"Oak Desk Lamp","price":119.0,"category":"lighting","event_ts":"2026-11-03T08:05:00Z","source_revision":5}
+{"business_key":"SKU-4002","title":"Felt Letter Tray","price":17.5,"category":"office","event_ts":"2026-11-03T08:10:00Z","source_revision":1}
+{"business_key":"SKU-4003","title":"Broken Row","price":"not-a-number","category":"office","event_ts":"2026-11-03T08:15:00Z","source_revision":1}

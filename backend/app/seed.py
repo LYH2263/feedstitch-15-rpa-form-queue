@@ -63,6 +63,48 @@ def init_db():
             reason TEXT NOT NULL,
             created_at TEXT NOT NULL
         );
+        CREATE TABLE IF NOT EXISTS rpa_batches(
+            id INTEGER PRIMARY KEY,
+            source_id INTEGER NOT NULL,
+            status TEXT NOT NULL,
+            target TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS rpa_steps(
+            id INTEGER PRIMARY KEY,
+            batch_id INTEGER NOT NULL,
+            seq INTEGER NOT NULL,
+            source_id INTEGER NOT NULL,
+            business_key TEXT,
+            payload_json TEXT NOT NULL,
+            status TEXT NOT NULL,
+            result TEXT,
+            error TEXT,
+            run_id INTEGER,
+            staging_id INTEGER,
+            conflict_id INTEGER,
+            intake_id INTEGER,
+            attempted_at TEXT,
+            finished_at TEXT,
+            UNIQUE(batch_id, seq)
+        );
+        CREATE TABLE IF NOT EXISTS intake_rows(
+            id INTEGER PRIMARY KEY,
+            batch_id INTEGER NOT NULL,
+            step_id INTEGER NOT NULL,
+            source_id INTEGER NOT NULL,
+            business_key TEXT NOT NULL,
+            event_ts TEXT NOT NULL,
+            source_revision INTEGER NOT NULL,
+            payload_json TEXT NOT NULL,
+            status TEXT NOT NULL,
+            run_id INTEGER,
+            staging_id INTEGER,
+            conflict_id INTEGER,
+            created_at TEXT NOT NULL,
+            promoted_at TEXT
+        );
         """
     )
     if conn.execute("SELECT COUNT(*) c FROM sources").fetchone()["c"] == 0:
@@ -99,9 +141,30 @@ def init_db():
                     1,
                     "xml 源：两件独立货号",
                 ),
+                (
+                    "Delta RPA Clicks",
+                    "jsonl",
+                    "delta_rpa_clicks.jsonl",
+                    None,
+                    0,
+                    1,
+                    "RPA 演示：含新货号、同键异价冲突行与一条坏行（逐步失败）",
+                ),
             ],
         )
         conn.execute("INSERT INTO settings(key, value) VALUES ('project_label', 'Feedstitch')")
         conn.execute("INSERT INTO settings(key, value) VALUES ('default_mode', 'incremental')")
+        conn.commit()
+    elif conn.execute(
+        "SELECT COUNT(*) c FROM sources WHERE fixture_path = 'delta_rpa_clicks.jsonl'"
+    ).fetchone()["c"] == 0:
+        # Idempotent seed for databases created before the RPA queue existed.
+        conn.execute(
+            """
+            INSERT INTO sources(name, format, fixture_path, watermark_ts, lookback_seconds, enabled, note)
+            VALUES ('Delta RPA Clicks', 'jsonl', 'delta_rpa_clicks.jsonl', NULL, 0, 1,
+                    'RPA 演示：含新货号、同键异价冲突行与一条坏行（逐步失败）')
+            """
+        )
         conn.commit()
     conn.close()

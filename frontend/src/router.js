@@ -7,6 +7,7 @@ import Staging from './pages/Staging.vue'
 import Conflicts from './pages/Conflicts.vue'
 import Canonical from './pages/Canonical.vue'
 import Watermarks from './pages/Watermarks.vue'
+import RpaQueue from './pages/RpaQueue.vue'
 
 export default createRouter({
   history: createWebHistory(),
@@ -15,6 +16,7 @@ export default createRouter({
     { path: '/sources', component: Sources },
     { path: '/preview', component: Preview },
     { path: '/workbench', component: Workbench },
+    { path: '/rpa', component: RpaQueue },
     { path: '/staging', component: Staging },
     { path: '/conflicts', component: Conflicts },
     { path: '/canonical', component: Canonical },
